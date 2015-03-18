@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#  Copyright (c) 2010 Franz Allan Valencia See
+#  Copyright (c) 2015 Lingaro
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 #  limitations under the License.
 
 
-"""Setup script for Robot's DatabaseLibrary distributions"""
+"""Setup script for Robot's TestManagementLibrary distributions"""
 
 from distutils.core import setup
 

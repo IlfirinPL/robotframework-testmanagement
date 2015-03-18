@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#  Copyright (c) 2010 Franz Allan Valencia See
+#  Copyright (c) 2015 Lingaro
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,19 +21,25 @@ from pyral import Rally
 
 class ConnectionManager(object):
     """
-    Connection Manager handles the connection & disconnection to the database.
+    Connection Manager handles the connection & disconnection to the Rally server.
     """
 
     def __init__(self):
         """
-        Initializes _dbconnection to None.
+        Initializes _rally_connection to None.
         """
         self._rally_connection = None
 
     def _check_connection(self):
+        """
+        Checks if connection is initialize.
+        """
         return not self._rally_connection is None
 
     def _assert_connection(self):
+        """
+        Asserts that connection is initialize
+        """
         assert self._check_connection(), "connection have not established yet"
 
     def connect_to_rally(self, server, user, password, workspace='default', project='default', log_file="./logs/rally.log"):
