@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#  Copyright (c) 2010 Franz Allan Valencia See
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+from robot.api import logger
+from pyral import Rally
+
+
+class ConnectionManager(object):
+    """
+    Connection Manager handles the connection & disconnection to the database.
+    """
+
+    def __init__(self):
+        """
+        Initializes _dbconnection to None.
+        """
+        self._rally_connection = None
+
+    def _check_connection(self):
+        return not self._rally_connection is None
+
+    def _assert_connection(self):
+        assert self._check_connection(), "connection have not established yet"
+
+    def connect_to_rally(self, server, user, password, workspace='default', project='default', log_file="./logs/rally.log"):
+        """
+        Establishes connection to the rally server using the provided parameters: `server`, `user` and `password`.
+        Optionally, you can specify a `workspace` or `project` (default values for this properties both equal 'default').
+
+        Method enables rally logging. You can provide optional parameter `log_file` to point file of your choice.
+        Default log file path is './logs/rally.log'.
+
+        To disable rally logging just set `log_file` to value evaluated to False (empty string, None, False).
+
+        Example usage:
+        | # explicitly specifies all property values |
+        | Connect To Rally | SERVER_URL | USER | PASSWORD | SOME-WORKSPACE | SOME-PROJECT | PATH-TO-LOG-FILE |
+
+        | # minimal property values set |
+        | Connect To Rally | SERVER_URL | USER | PASSWORD |
+
+        | # disable rally logging |
+        | Connect To Rally | SERVER_URL | USER | PASSWORD | log_file=False |
+        """
+        logger.debug(u"Try to connect to rally using: server={server}, user={user}, password={password}, workspace={workspace}, project={project}".format(
+            server=server,
+            user=user,
+            password=password,
+            workspace=workspace,
+            project=project
+        ))
+        self._rally_connection = Rally(server, user, password, workspace=workspace, password=password)
+        logger.info("Connection to {user}@{server} established.".format(server=server, user=user))
+        if log_file:
+            self._rally_connection.enableLogging(log_file)
+            logger.info("Logging to {0}".format(log_file))
+        else:
+            logger.info("Logging is disabled")
+            self._rally_connection.disableLogging()
+
+    def _reset_connection(self):
+        self._rally_connection = None
+
+    def disconnect_from_rally(self):
+        """
+        Disconnects from the rally server.
+
+        For example:
+        | Disconnect From Rally | # disconnects from current connection to the rally |
+        """
+        if not self._check_connection():
+            logger.info("connection doesn't exist so can't be disconnected")
+        else:
+            logger.info("resetting connection")
+        self._reset_connection()
+
+
