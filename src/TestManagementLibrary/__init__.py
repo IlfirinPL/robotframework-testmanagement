@@ -15,11 +15,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from connection_manager import ConnectionManager
-
 __version__ = '0.1'
 
-class TestManagementLibrary(ConnectionManager):
+from .connection_manager import ConnectionManager
+from .query import QueryManager
+from .test_case import TestCaseManager
+from .test_result import TestResultManager
+from .defect import DefectManager
+from .build import BuildManager
+
+
+class TestManagementLibrary(ConnectionManager, QueryManager, TestCaseManager, BuildManager, TestResultManager,
+                            DefectManager):
     """
     Test Management Library contains utilities meant for Robot Framework's usage.
 
@@ -38,6 +45,7 @@ class TestManagementLibrary(ConnectionManager):
     Example Usage:
     | # Setup |
     | Connect to Rally | SERVER-URL | USER | PASSWORD |
+    | Disconnect form Rally |
     | # do somthing more ... | 
     """
 

@@ -32,25 +32,33 @@ class ConnectionManager(object):
 
     def _check_connection(self):
         """
-        Checks if connection is initialize.
+        Checks if connection is initialized.
         """
         return not self._rally_connection is None
 
     def _assert_connection(self):
         """
-        Asserts that connection is initialize
+        Checks that connection is initialized and raises a ValueError and log some info if not.
         """
-        assert self._check_connection(), "connection have not established yet"
+        if not self._check_connection():
+            logger.warn("connection have not established yet, probably you have to call connect to rally first")
+            raise ValueError("connection have not established yet")
 
-    def connect_to_rally(self, server, user, password, workspace='default', project='default', log_file="./logs/rally.log"):
+    def _get_rally_connection(self):
+        """
+        Safe rally connection getter.
+        :return: rally connection object
+        """
+        self._assert_connection()
+        return self._rally_connection
+
+    def connect_to_rally(self, server, user, password, workspace=None, project=None, log_file=None):
         """
         Establishes connection to the rally server using the provided parameters: `server`, `user` and `password`.
         Optionally, you can specify a `workspace` or `project` (default values for this properties both equal 'default').
 
-        Method enables rally logging. You can provide optional parameter `log_file` to point file of your choice.
-        Default log file path is './logs/rally.log'.
-
-        To disable rally logging just set `log_file` to value evaluated to False (empty string, None, False).
+        Method can enable rally logging. You can provide optional parameter `log_file` to point file of your choice.
+        Default `log_file` parameter value is None, witch indicates that logging is disabled.
 
         Example usage:
         | # explicitly specifies all property values |
@@ -62,23 +70,26 @@ class ConnectionManager(object):
         | # disable rally logging |
         | Connect To Rally | SERVER_URL | USER | PASSWORD | log_file=False |
         """
-        logger.debug(u"Try to connect to rally using: server={server}, user={user}, password={password}, workspace={workspace}, project={project}".format(
+        logger.info(u"Try to connect to rally using: server={server}, workspace={workspace}, project={project}".format(
             server=server,
-            user=user,
-            password=password,
             workspace=workspace,
             project=project
         ))
-        self._rally_connection = Rally(server, user, password, workspace=workspace, password=password)
-        logger.info("Connection to {user}@{server} established.".format(server=server, user=user))
+        kwargs = {}
+        if project:
+            kwargs['project'] = project
+        if workspace:
+            kwargs['workspace'] = workspace
+        self._rally_connection = Rally(server, user, password, **kwargs)
+        logger.info("Connection to {server} established.".format(server=server))
         if log_file:
-            self._rally_connection.enableLogging(log_file)
-            logger.info("Logging to {0}".format(log_file))
+            self._rally_connection.enableLogging(str(log_file))
+            logger.info(u"Logging to {0}".format(log_file))
         else:
-            logger.info("Logging is disabled")
+            logger.info(u"Logging is disabled")
             self._rally_connection.disableLogging()
 
-    def _reset_connection(self):
+    def _reset_rally_connection(self):
         self._rally_connection = None
 
     def disconnect_from_rally(self):
@@ -92,6 +103,4 @@ class ConnectionManager(object):
             logger.info("connection doesn't exist so can't be disconnected")
         else:
             logger.info("resetting connection")
-        self._reset_connection()
-
-
+        self._reset_rally_connection()

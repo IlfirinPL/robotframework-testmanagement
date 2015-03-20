@@ -18,9 +18,11 @@
 
 """Setup script for Robot's TestManagementLibrary distributions"""
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
-import sys, os
+import os
+import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from TestManagementLibrary import __version__
@@ -32,8 +34,8 @@ setup(
     author=u'Michał Lula',
     author_email=u'michal.lula@lingaro.com',
     url=u'https://github.com/IlfirinPL/robotframework-testmanagement',
-    package_dir={u'': u'src'},
-    packages=[u'TestManagementLibrary'],
+    package_dir={u'': 'src'},
+    packages=find_packages(),
     install_requires=[
         u'robotframework',
         u'requests',
