@@ -17,51 +17,22 @@
 
 from .query import (
     Operator,
-    ObjectIDParameter
+    DisplayNameParameter
 )
 
 
-class BuildManager(object):
+class UserManager(object):
     """
     We assumes that this class will be mixed with RallyConnectionManager to provide the _get_rally_connection method.
     """
 
-    def add_build(self):
-        """
-        Not implemented.
-        """
-        raise NotImplementedError()
-
-    def modify_build(self):
-        """
-        Not implemented.
-        """
-        raise NotImplementedError()
-
-    def remove_build(self):
-        """
-        Not implemented.
-        """
-        raise NotImplementedError()
-
-    def _get_build(self, query, **kwargs):
+    def _get_user(self, query, **kwargs):
         """
         Calls Rally Rest API with given query and fetch build object
         :param query: RallyQuery object
         :return: Build object
         """
-        return self._execute_rally_query(u'Build', query, fetch=True, **kwargs)
+        return self._execute_rally_query(u'User', query, fetch=True, **kwargs)
 
-    def _get_build_by_id(self, object_id):
-        return self._get_object_by_id(u'Build', ObjectIDParameter(object_id, Operator.EQUAL))
-
-    def find_build(self, object_id=None, join_method=None):
-        """
-        @TODO:
-        """
-        query = self._build_query(
-            param_join_method=join_method,
-            object_id=object_id
-        )
-        result = self._get_build(query)
-        return [item.ObjectID for item in result]
+    def _get_user_by_name(self, name):
+        return self._get_object_by_id(u'User', DisplayNameParameter(name, Operator.EQUAL))

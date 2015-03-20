@@ -30,24 +30,6 @@ class TestCaseManager(object):
     We assumes that this class will be mixed with RallyConnectionManager to provide the _get_rally_connection method.
     """
 
-    def add_test_case(self):
-        """
-        Not implemented.
-        """
-        raise NotImplementedError()
-
-    def modify_test_case(self):
-        """
-        Not implemented.
-        """
-        raise NotImplementedError()
-
-    def remove_test_case(self):
-        """
-        Not implemented.
-        """
-        raise NotImplementedError()
-
     def _get_test_case(self, query, **kwargs):
         """
         Calls Rally Rest API with given query

@@ -16,13 +16,16 @@
 #  limitations under the License.
 import datetime
 import traceback
+from pyral.restapi import Rally
 
 from robot.api import logger
+from TestManagementLibrary.query import RallyQuery
 
+from .utils import get_first
 
 class TestResultManager(object):
 
-    def _build_test_result_data(self, build_id, test_case_id, verdict, date=None, tester=None, test_set=None,
+    def _build_test_result_data(self, test_case_id, build, verdict, date=None, tester=None, test_set=None,
                                 notes=None, duration=None, attachment_list=None):
         """
         :param test_case_ID:
@@ -37,51 +40,58 @@ class TestResultManager(object):
         :return:
         """
         test_case = self._get_test_case_by_id(test_case_id)
-        build = self._get_build_by_id(build_id)
-        return dict(
+        result = dict(
             TestCase=test_case.ref,
-            Build=build.ref,
+            Build=build,
             Verdict=verdict,
-            Date=datetime.datetime.now().isoformat()
+            Date=date or datetime.datetime.now().isoformat()
         )
+        if tester:
+            user = self._get_user_by_name(tester)
+            result['Tester'] = user.ref
+        if test_set:
+            test_set = self._get_test_set_by_id(test_set)
+            result['TestSet'] = test_set.ref
+        if notes:
+            result['Notes'] = notes
+        if duration:
+            result['Duration'] = duration
+        return result
 
-    # def _create_build_definition(self, connection):
-    #     return connection.create('BuildDefinition', dict(
-    #         Project=connection.getProject().ref,
-    #         Name=u"Ala ma kota"
-    #     ))
-    #
-    # def _create_build(self, connection, build_definition):
-    #     return connection.create('Build', dict(
-    #         BuildDefinition=build_definition.ref,
-    #         Status=u"SUCCESS"
-    #     ))
-
-    def _get_first(self, value_or_list):
-        if isinstance(value_or_list, (list, tuple)):
-            if value_or_list:
-                logger.info(u"List provided so get first: {0}".format(value_or_list[0]))
-                value = value_or_list[0]
-            else:
-                logger.warn(u"Empty list.")
-                raise ValueError(u"Empty list")
-        else:
-            value = value_or_list
-        return value
-
-    def add_test_result(self, test_case, build, verdict, date=None, tester=None, test_set=None, notes=None, duration=None, attachment_list=None):
+    def add_test_result(self, test_case_id, build, verdict, date=None, tester=None, test_set=None, notes=None,
+                        duration=None, attachment_list=None):
         """
         Adds a new Test Result to Test Case provided with FormatterID passed as first (obligatory) parameter.
         """
-        logger.info(u"Provided test case FormattedID: {0}".format(unicode(test_case)))
-        logger.info(u"Provided build ObjectID: {0}".format(unicode(build)))
-        test_case_id = self._get_first(test_case)
-        build_id = self._get_first(build)
+        logger.info(u"""Add test result:
+        FormattedID: {test_case_id}
+        Build: {build}
+        Verdict: {verdict}
+        Date: {date}
+        Tester: {tester}
+        TestSet: {test_set}
+        Notes: {notes}
+        Duration: {duration}
+        Attachment_list: {attachment_list}""".format(
+            test_case_id=test_case_id,
+            build=build,
+            verdict=verdict,
+            date=date,
+            tester=tester,
+            test_set=test_set,
+            notes=notes,
+            duration=duration,
+            attachment_list=attachment_list
+        ))
+        test_case_id = get_first(test_case_id)
         connection = self._get_rally_connection()
+        test_result_data = self._build_test_result_data(test_case_id, build, verdict,
+                                                        date=date, tester=tester, test_set=test_set, notes=notes,
+                                                        duration=duration)
         try:
-            return connection.create('TestCaseResult', self._build_test_result_data(build_id, test_case_id, verdict))
+            test_result = connection.create('TestCaseResult', test_result_data)
+            self._add_attachments(test_result, attachment_list)
         except Exception as e:
             logger.warn("An error occurred")
             logger.warn(traceback.format_exc())
             raise e
-

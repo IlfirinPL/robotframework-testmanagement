@@ -15,23 +15,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robot.api import logger
 
-"""Setup script for Robot's TestManagementLibrary distributions"""
 
-from setuptools import setup
-
-setup(
-    name=u'robotframework-testmanagement-library',
-    version=u'0.1',
-    description=u'Test management utility library for Robot Framework',
-    author=u'Michał Lula',
-    author_email=u'michal.lula@lingaro.com',
-    url=u'https://github.com/IlfirinPL/robotframework-testmanagement',
-    package_dir={u'': 'src'},
-    packages=['TestManagementLibrary'],
-    install_requires=[
-        u'robotframework',
-        u'requests',
-        u'pyral'
-    ]
-)
+def get_first(value_or_list):
+    if isinstance(value_or_list, (list, tuple)):
+        if value_or_list:
+            logger.info(u"List provided so get first: {0}".format(value_or_list[0]))
+            value = value_or_list[0]
+        else:
+            logger.warn(u"Empty list.")
+            raise ValueError(u"Empty list")
+    else:
+        value = value_or_list
+    return value

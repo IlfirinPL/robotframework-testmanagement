@@ -95,6 +95,16 @@ class NameParameter(RallyQueryParameter):
     DEFAULT_OPERATOR = Operator.CONTAINS
 
 
+class DisplayNameParameter(RallyQueryParameter):
+    NAME = u'DisplayName'
+    DEFAULT_OPERATOR = Operator.CONTAINS
+
+
+class UserNameParameter(RallyQueryParameter):
+    NAME = u'UserName'
+    DEFAULT_OPERATOR = Operator.CONTAINS
+
+
 class RallyQueryJoinMethod(unicode):
 
     PATTERN = u"({arg1}) {oper} ({arg2})"

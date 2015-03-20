@@ -19,14 +19,15 @@ __version__ = '0.1'
 
 from .connection_manager import ConnectionManager
 from .query import QueryManager
+from .user import UserManager
+from .attachment import AttachmentManager
 from .test_case import TestCaseManager
 from .test_result import TestResultManager
 from .defect import DefectManager
-from .build import BuildManager
 
 
-class TestManagementLibrary(ConnectionManager, QueryManager, TestCaseManager, BuildManager, TestResultManager,
-                            DefectManager):
+class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, AttachmentManager,TestCaseManager,
+                            TestResultManager, DefectManager):
     """
     Test Management Library contains utilities meant for Robot Framework's usage.
 
