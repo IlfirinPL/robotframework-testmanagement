@@ -34,7 +34,7 @@ def main():
           url          = 'https://github.com/IlfirinPL/robotframework-testmanagement',
           package_dir  = { '' : 'src'},
           packages     = ['TestManagementLibrary'],
-          requires     = [
+          install_requires     = [
               'robotframework',
               'requests',
               'pyral'
