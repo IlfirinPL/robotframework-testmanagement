@@ -18,29 +18,25 @@
 
 """Setup script for Robot's TestManagementLibrary distributions"""
 
-from distutils.core import setup
+from setuptools import setup
 
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from TestManagementLibrary import __version__
 
-def main():
-    setup(name         = 'robotframework-testmanagement-library',
-          version      = __version__,
-          description  = 'Test management utility library for Robot Framework',
-          author       = 'Michał Lula',
-          author_email = 'michal.lula@lingaro.com',
-          url          = 'https://github.com/IlfirinPL/robotframework-testmanagement',
-          package_dir  = { '' : 'src'},
-          packages     = ['TestManagementLibrary'],
-          install_requires     = [
-              'robotframework',
-              'requests',
-              'pyral'
-          ]
-          )
-        
-
-if __name__ == "__main__":
-    main()
+setup(
+    name=u'robotframework-testmanagement-library',
+    version=__version__,
+    description=u'Test management utility library for Robot Framework',
+    author=u'Michał Lula',
+    author_email=u'michal.lula@lingaro.com',
+    url=u'https://github.com/IlfirinPL/robotframework-testmanagement',
+    package_dir={u'': u'src'},
+    packages=[u'TestManagementLibrary'],
+    install_requires=[
+        u'robotframework',
+        u'requests',
+        u'pyral'
+    ]
+)
