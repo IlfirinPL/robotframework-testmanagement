@@ -16,13 +16,15 @@
 #  limitations under the License.
 
 from robot.api import logger
-from pyral import Rally
+from .rally import WrappedRally
 
 
 class ConnectionManager(object):
     """
     Connection Manager handles the connection & disconnection to the Rally server.
     """
+
+    RALLY_CONNECTION_CLASS = WrappedRally
 
     def __init__(self):
         """
@@ -52,6 +54,9 @@ class ConnectionManager(object):
         self._assert_connection()
         return self._rally_connection
 
+    def _create_rally_connection(self, *args, **kwargs):
+        return self.RALLY_CONNECTION_CLASS(*args, **kwargs)
+
     def connect_to_rally(self, server, user, password, workspace=None, project=None, log_file=None):
         """
         Establishes connection to the rally server using the provided parameters: `server`, `user` and `password`.
@@ -80,7 +85,7 @@ class ConnectionManager(object):
             kwargs['project'] = project
         if workspace:
             kwargs['workspace'] = workspace
-        self._rally_connection = Rally(server, user, password, **kwargs)
+        self._rally_connection = self._create_rally_connection(server, user, password, **kwargs)
         logger.info("Connection to {server} established.".format(server=server))
         if log_file:
             self._rally_connection.enableLogging(str(log_file))
