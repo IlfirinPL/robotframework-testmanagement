@@ -20,22 +20,16 @@
 
 from setuptools import setup, find_packages
 
-import os
-import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
-
-from TestManagementLibrary import __version__
 
 setup(
     name=u'robotframework-testmanagement-library',
-    version=__version__,
+    version=u'0.1',
     description=u'Test management utility library for Robot Framework',
     author=u'Michał Lula',
     author_email=u'michal.lula@lingaro.com',
     url=u'https://github.com/IlfirinPL/robotframework-testmanagement',
     package_dir={u'': 'src'},
-    packages=find_packages(),
+    packages=['TestManagementLibrary'],
     install_requires=[
         u'robotframework',
         u'requests',
