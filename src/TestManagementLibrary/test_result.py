@@ -58,8 +58,8 @@ class TestResultManager(object):
             result['Duration'] = duration
         return result
 
-    def add_test_result(self, test_case_id, build, verdict, date=None, tester=None, test_set=None, notes=None,
-                        duration=None, attachment_list=None):
+    def add_test_result(self, test_case_id, build, verdict, notes=None, attachment_list=None, date=None, tester=None,
+                        test_set=None, duration=None):
         """
         Adds a new Test Result to Test Case provided with FormatterID passed as first (obligatory) parameter.
         """

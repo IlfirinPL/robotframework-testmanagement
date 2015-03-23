@@ -57,10 +57,11 @@ class ConnectionManager(object):
     def _create_rally_connection(self, *args, **kwargs):
         return self.RALLY_CONNECTION_CLASS(*args, **kwargs)
 
-    def connect_to_rally(self, server, user, password, workspace=None, project=None, log_file=None):
+    def connect_to_rally(self, server, user, password, workspace, project=None, log_file=None):
         """
         Establishes connection to the rally server using the provided parameters: `server`, `user` and `password`.
-        Optionally, you can specify a `workspace` or `project` (default values for this properties both equal 'default').
+        You have to specify a `workspace` parameter to set the correct workspace environment. You may set `project`
+        parameter, but it is optional (default None means to search in all projects in workspace).
 
         Method can enable rally logging. You can provide optional parameter `log_file` to point file of your choice.
         Default `log_file` parameter value is None, witch indicates that logging is disabled.
@@ -70,10 +71,10 @@ class ConnectionManager(object):
         | Connect To Rally | SERVER_URL | USER | PASSWORD | SOME-WORKSPACE | SOME-PROJECT | PATH-TO-LOG-FILE |
 
         | # minimal property values set |
-        | Connect To Rally | SERVER_URL | USER | PASSWORD |
+        | Connect To Rally | SERVER_URL | USER | PASSWORD | WORKSPACE |
 
         | # disable rally logging |
-        | Connect To Rally | SERVER_URL | USER | PASSWORD | log_file=False |
+        | Connect To Rally | SERVER_URL | USER | PASSWORD | WORKSPACE | log_file=False |
         """
         logger.info(u"Try to connect to rally using: server={server}, workspace={workspace}, project={project}".format(
             server=server,
