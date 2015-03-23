@@ -33,7 +33,7 @@ def get_first(value_or_list):
     return value
 
 
-def get_netloc_and_path(self, url):
+def get_netloc_and_path( url):
     split_result = urlparse.urlsplit(url)
     if split_result.scheme and split_result.scheme != u'https':
         raise ValueError(u"unsupported protocol {0}. Only https is allowed".format(split_result.scheme))

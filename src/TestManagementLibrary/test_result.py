@@ -60,6 +60,21 @@ class TestResultManager(object):
                         test_set=None, duration=None):
         """
         Adds a new Test Result to Test Case provided with FormatterID passed as first (obligatory) parameter.
+
+        It takes 3 mandatory parameters `test_case_id` (FormattedID of test case - if list is provided it takes first
+        element from list), `build` and `verdict` (allowed values are Fail or Pass).
+        The last required for the test result creation parameter is `date` parameter. If it is not provided directyle
+        it is set to the current datetime.
+
+        Method takes 5 optional parameters: `notes`, `attachment_list` (a list of paths to files - absolute or relative),
+        `tester` (name of the user), `test_set` (FormattedID of TestSet object) and `duration`.
+
+        Example usage:
+        | # minimal information |
+        |Add Test Result | TC5001 | BUILD | Pass |
+        | # standard usage |
+        |Add Test Result | TC5001 | BUILD | Pass | Very complex test | ${attachment_list} |
+
         """
         logger.info(u"""Add test result:
         FormattedID: {test_case_id}

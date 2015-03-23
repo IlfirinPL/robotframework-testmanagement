@@ -58,13 +58,13 @@ class TestCaseManager(object):
 
         Example usage:
         | # find test case by FormattedId |
-        | Find Test Case | T28 |
+        | Find Test Case | TC28 |
 
         | # find test case by FormattedId and Name |
-        | Find Test Case | T2 | | SOME-NAME |
+        | Find Test Case | TC28 | name=SOME-NAME |
 
         | # find test case by FormattedId or Name |
-        | Find Test Case | T2 | | SOME-NAME | | | OR |
+        | Find Test Case | TC28 | name=SOME-NAME | join_method="OR" |
         """
         query = self._build_query(
             param_join_method=join_method,

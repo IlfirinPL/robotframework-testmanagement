@@ -46,6 +46,6 @@ class AttachmentManager(object):
         """
         attachment_list_data = self._build_attachment_list_data(attachment_list)
         if attachment_list:
-            logger.info("Adding attachments:")
+            logger.info(u"Adding attachments: {0}".format(unicode(attachment_list)))
             conn = self._get_rally_connection()
             conn.addAttachments(artifact, attachment_list_data)

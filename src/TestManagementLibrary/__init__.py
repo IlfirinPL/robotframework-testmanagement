@@ -35,7 +35,6 @@ class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, Attach
     This can allow you to connect to the rally server and manipulate tasks.
 
 
-
     References:
 
      + Rally REST API - https://help.rallydev.com/python-toolkit-rally-rest-api
@@ -43,12 +42,14 @@ class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, Attach
      + Robot Framework - http://robotframework.org/
 
 
-
     Example Usage:
     | # Setup |
-    | Connect to Rally | SERVER-URL | USER | PASSWORD |
+    | Connect to Rally | SERVER-URL | USER | PASSWORD | WORKSPACE |
+    | @{test_cases} | Find Test Case | name="ABC" |
+    | # create attachments |
+    | Add Test Result | @{test_cases} | BUILD-NAME | VERDICT | NOTES | attachment_list=${attachment_list} |
+    | # do something more ... |
     | Disconnect form Rally |
-    | # do somthing more ... | 
     """
 
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
