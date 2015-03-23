@@ -16,10 +16,8 @@
 #  limitations under the License.
 import datetime
 import traceback
-from pyral.restapi import Rally
 
 from robot.api import logger
-from TestManagementLibrary.query import RallyQuery
 
 from .utils import get_first
 

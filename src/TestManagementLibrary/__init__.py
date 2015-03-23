@@ -22,12 +22,13 @@ from .query import QueryManager
 from .user import UserManager
 from .attachment import AttachmentManager
 from .test_case import TestCaseManager
+from .test_set import TestSetManager
 from .test_result import TestResultManager
 from .defect import DefectManager
 
 
-class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, AttachmentManager,TestCaseManager,
-                            TestResultManager, DefectManager):
+class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, AttachmentManager, TestCaseManager,
+                            TestSetManager, TestResultManager, DefectManager):
     """
     Test Management Library contains utilities meant for Robot Framework's usage.
 

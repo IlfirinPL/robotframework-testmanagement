@@ -15,6 +15,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import urlparse
+
 from robot.api import logger
 
 
@@ -29,3 +31,12 @@ def get_first(value_or_list):
     else:
         value = value_or_list
     return value
+
+
+def get_netloc_and_path(self, url):
+    split_result = urlparse.urlsplit(url)
+    if split_result.scheme and split_result.scheme != u'https':
+        raise ValueError(u"unsupported protocol {0}. Only https is allowed".format(split_result.scheme))
+    result = split_result.netloc + split_result.path
+    logger.info(u"Extracted netloc and path {0} from {1}".format(result, url))
+    return result

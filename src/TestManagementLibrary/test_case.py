@@ -16,11 +16,9 @@
 #  limitations under the License.
 
 import traceback
-from robot.api import logger
 from TestManagementLibrary.query import Operator
 
 from .query import (
-    RallyQuery,
     FormattedIDParameter
 )
 
