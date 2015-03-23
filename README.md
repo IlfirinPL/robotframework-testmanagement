@@ -8,3 +8,8 @@ To install it just type in terminal
 ```
 pip install robotframework-testmanagement
 ```
+
+For further information visit project [site](http://ilfirinpl.github.io/robotframework-testmanagement/).
+
+API Documentation:
+* [v0.1](http://ilfirinpl.github.io/robotframework-testmanagement/api/0.1/TestManagementLibrary.html)
