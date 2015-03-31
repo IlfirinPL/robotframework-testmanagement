@@ -10,7 +10,7 @@ from setuptools import setup
 
 setup(
     name=u'robotframework-testmanagement',
-    version=u'0.1',
+    version=u'0.1.1',
     description=u'Test management utility library for Robot Framework',
     author=u'Michał Lula',
     author_email=u'michal.lula@lingaro.com',
