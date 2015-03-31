@@ -22,6 +22,17 @@ def get_first(value_or_list):
     return value
 
 
+def make_tuple(value_or_list):
+    result = None
+    if not value_or_list:
+        result = ()
+    elif isinstance(value_or_list, (list, tuple)):
+        result = value_or_list
+    else:
+        result = (value_or_list,)
+    return result
+
+
 def get_netloc_and_path( url):
     split_result = urlparse.urlsplit(url)
     if split_result.scheme and split_result.scheme != u'https':

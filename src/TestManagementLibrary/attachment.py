@@ -7,6 +7,7 @@
 from robot.api import logger
 import mimetypes
 
+from .utils import make_tuple
 
 class AttachmentManager(object):
     """
@@ -25,7 +26,7 @@ class AttachmentManager(object):
 
     @classmethod
     def _build_attachment_list_data(cls, attachment_list=None):
-        return [cls._build_attachment_data(attachment) for attachment in attachment_list or ()]
+        return [cls._build_attachment_data(attachment) for attachment in make_tuple(attachment_list)]
 
     def _add_attachments(self, artifact, attachment_list):
         """
