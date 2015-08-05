@@ -8,7 +8,7 @@
 
 from setuptools import setup
 
-version = u'0.1.5'
+version = u'0.1.6'
 
 setup(
     name=u'robotframework-testmanagement',
@@ -17,7 +17,7 @@ setup(
     author=u'Michał Lula',
     author_email=u'michal.lula@lingaro.com',
     url=u'https://github.com/IlfirinPL/robotframework-testmanagement',
-    download_url=u'https://github.com/IlfirinPL/robotframework-testmanagement/tarball/{version}'.format(version=version),
+    download_url=u'https://github.com/IlfirinPL/robotframework-testmanagement/tarball/v{version}'.format(version=version),
     keywords=['robotframework', 'rally', 'pyral'],
     package_dir={u'': 'src'},
     packages=['TestManagementLibrary'],
