@@ -15,7 +15,7 @@ class AttachmentManager(object):
     """
 
     @classmethod
-    def _build_attachment_data(cls, attachment, default_mime_type='text/plain'):
+    def _build_attachment_data(cls, attachment, default_mime_type='binary/octet-stream'):
         mime_type, _ = mimetypes.guess_type(attachment, strict=False)
         if not mime_type:
             mime_type = default_mime_type
