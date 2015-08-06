@@ -4,6 +4,7 @@
 #  Copyright (c) 2015 Lingaro
 
 import traceback
+import socket
 
 from robot.api import logger
 from .utils import get_netloc_and_path
@@ -46,7 +47,14 @@ class ConnectionManager(object):
         return self._rally_connection
 
     def _create_rally_connection(self, *args, **kwargs):
-        return self.RALLY_CONNECTION_CLASS(*args, **kwargs)
+        logger.debug("timeout before really connection creation: {0}".format(socket.getdefaulttimeout()))
+        old_timeout = socket.getdefaulttimeout()
+        try:
+            return self.RALLY_CONNECTION_CLASS(*args, **kwargs)
+        finally:
+            logger.debug("timeout changed to: {0}".format(socket.getdefaulttimeout()))
+            socket.setdefaulttimeout(old_timeout)
+            logger.debug("Back to previous value: {0}".format(socket.getdefaulttimeout()))
 
     def connect_to_rally(self, server_url, user, password, workspace, project=None, number_of_retries=3, log_file=None):
         """

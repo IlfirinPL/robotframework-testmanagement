@@ -8,7 +8,7 @@
 
 from setuptools import setup
 
-version = u'0.1.6'
+version = u'0.1.7'
 
 setup(
     name=u'robotframework-testmanagement',
