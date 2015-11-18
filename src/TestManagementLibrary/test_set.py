@@ -4,8 +4,6 @@
 #  Copyright (c) 2015 Lingaro
 
 
-from TestManagementLibrary.query import Operator
-
 from .query import (
     FormattedIDParameter
 )
@@ -22,5 +20,5 @@ class TestSetManager(object):
         :param formatted_id:
         :return:
         """
-        return self._get_object_by_id(u'TestCase', FormattedIDParameter(formatted_id, operator=Operator.EQUAL),
+        return self._get_object_by_id(u'TestSet', FormattedIDParameter(formatted_id),
                                       *args, **kwargs)
