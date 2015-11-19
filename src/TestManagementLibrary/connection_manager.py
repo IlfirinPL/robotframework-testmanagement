@@ -17,6 +17,7 @@ class ConnectionManager(object):
     """
 
     RALLY_CONNECTION_CLASS = WrappedRally
+    INVALIND_CREDENTIALS_MESSAGE = u'Invalid credentials'
 
     def __init__(self):
         """
@@ -55,6 +56,17 @@ class ConnectionManager(object):
             logger.debug("timeout changed to: {0}".format(socket.getdefaulttimeout()))
             socket.setdefaulttimeout(old_timeout)
             logger.debug("Back to previous value: {0}".format(socket.getdefaulttimeout()))
+
+    def _detect_wrong_credentials(self, err):
+        """
+        Detects if error is related to invalid credentials passed by the user. This check is useful to not retry and to
+        not block the user account.
+        Args:
+            err:
+
+        Returns: True if error is related to invalid credentials and False otherwise
+        """
+        return self.INVALIND_CREDENTIALS_MESSAGE in err.message
 
     def connect_to_rally(self, server_url, user, password, workspace, project=None, number_of_retries=3, log_file=None):
         """
@@ -100,7 +112,10 @@ class ConnectionManager(object):
                 self._rally_connection = self._create_rally_connection(server, user, password, **kwargs)
                 break
             except Exception as e:
-                if number_of_retries <= tries_counter:
+                if self._detect_wrong_credentials(e):
+                    logger.error(self.INVALIND_CREDENTIALS_MESSAGE)
+                    raise e
+                elif number_of_retries <= tries_counter:
                     logger.warn("An error occurred. Maximum number of tries reached.")
                     raise e
                 else:

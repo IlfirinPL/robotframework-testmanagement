@@ -4,10 +4,9 @@
 #  Copyright (c) 2015 Lingaro
 
 
-from TestManagementLibrary.query import Operator
-
 from .query import (
-    FormattedIDParameter
+    FormattedIDParameter,
+    Operator
 )
 
 

@@ -5,7 +5,8 @@
 
 
 from .query import (
-    FormattedIDParameter
+    FormattedIDParameter,
+    Operator
 )
 
 
@@ -20,5 +21,5 @@ class TestSetManager(object):
         :param formatted_id:
         :return:
         """
-        return self._get_object_by_id(u'TestSet', FormattedIDParameter(formatted_id),
+        return self._get_object_by_id(u'TestSet', FormattedIDParameter(formatted_id, Operator.EQUAL),
                                       *args, **kwargs)
