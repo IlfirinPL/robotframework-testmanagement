@@ -28,14 +28,14 @@
                     type:"HierarchicalRequirement",
                     query: "( Tags.Name = PRD )",
                     order:"Name",
-                    fetch:"Children,Name,TestCases,LastVerdict,Attachments,LastRun,FormattedID,,Results,Tester,Owner,Type"
+                    fetch:"Children,Name,TestCases,LastVerdict,Attachments,LastRun,LastBuild,FormattedID,,Results,Tester,Owner,Type"
                 }, dojo.hitch(this, this.showTables));
             };
 
             this.createEpicTable = function(epic, parentContainer) {
                 var tableConfig = {
-                    'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastVerdict','Attachment', 'Level'],
-                    'columnHeaders': ["User Story",'Test Case ID','Test Case Name',"Type",'Owner','Last Run','Last Verdict','Design Output', 'Level'],
+                    'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastBuild','LastVerdict','Attachment','Level'],
+                    'columnHeaders': ["User Story",'Test Case ID','Test Case Name',"Type",'Owner','Last Run','Last Verdict', 'Last Build', 'Design Output', 'Level'],
                     sortingEnabled:false
                 }, nodeId = "epic-" + epic.FormattedID;
                 var epicTable = new rally.sdk.ui.Table(tableConfig);
@@ -46,8 +46,8 @@
 
             this.createChildTable = function(results, epic, parentContainer) {
                 var tableConfig = {
-                    'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastVerdict','Attachment', 'Level'],
-                    'columnHeaders': ["User Story",'Test Case ID','Test Case Name',"Type",'Owner','Last Run','Last Verdict','Design Output', 'Level'],
+                    'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastVerdict', 'LastBuild', 'Attachment', 'Level'],
+                    'columnHeaders': ["User Story",'Test Case ID','Test Case Name',"Type",'Owner','Last Run','Last Verdict', 'Last Build', 'Design Output', 'Level'],
                     sortingEnabled:false
                 }, rows = [];
                 dojo.forEach(epic.Children, function (child) {
@@ -77,7 +77,7 @@
                         type: "HierarchicalRequirement",
                         query: "(FormattedID = " + child.FormattedID + ")",
                         order: "Name",
-                        fetch: "Children,Name,TestCases,LastVerdict,Attachments,LastRun,FormattedID,,Results,Tester,Owner,Type"
+                        fetch: "Children,Name,TestCases,LastVerdict,Attachments,LastRun,LastBuild,FormattedID,,Results,Tester,Owner,Type"
                     });
                 }, this);
                 return configs;
@@ -131,6 +131,7 @@
                     tempObject.TestCaseName = testCase.Name;
                     tempObject.LastVerdict = testCase.LastVerdict || "...";
                     tempObject.LastRun = testCase.LastRun ? this.formatDate(testCase.LastRun) : "...";
+                    tempObject.LastBuild = testCase.LastBuild ? testCase.LastBuild : "...";
                     tempObject.Risk = testCase.Risk;
                 }
 
