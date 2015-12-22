@@ -48,25 +48,25 @@
                 dataSource.findAll(queryArray, showTables);
             }
 
-            function createEpicTable(epic, parentContainer) {
-                var tableConfig = {
-                    'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastBuild','LastVerdict','Attachment','Level'],
+            function createEpicTable(node, parentContainer) {
+                var epic = node.getItem(), tableConfig = {
+                    'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastVerdict','LastBuild','Attachment','Level'],
                     'columnHeaders': ["User Story",'Test Case ID','Test Case Name',"Type",'Owner','Last Run','Last Verdict', 'Last Build', 'Design Output', 'Level'],
                     sortingEnabled:false
                 }, nodeId = "epic-" + epic.FormattedID;
                 var epicTable = new rally.sdk.ui.Table(tableConfig);
-                epicTable.addRows(createTableRowObject(epic, epic.Source, 0));
+                epicTable.addRows(createTableRowObject(node, epic.Source, 0));
                 dojo.place("<div class=\"tableContainer\"><h3><span>" + objectToLinkMarkup(epic.FormattedID, epic) + " - " + epic.Name + "</span></h3><div id=\"" + nodeId + "\"></div></div><br/>", parentContainer);
                 epicTable.display(nodeId);
             }
 
-            function createChildTable(tree, epic, parentContainer) {
-                var tableConfig = {
+            function createChildTable(node, parentContainer) {
+                var epic = node.getItem(), tableConfig = {
                     'columnKeys'   : ["FormattedId",'TestCaseFormattedId','TestCaseName',"Type",'OwnerName','LastRun','LastVerdict', 'LastBuild', 'Attachment', 'Level'],
                     'columnHeaders': ["User Story",'Test Case ID','Test Case Name',"Type",'Owner','Last Run','Last Verdict', 'Last Build', 'Design Output', 'Level'],
                     sortingEnabled:false
                 }, rows = [];
-                createRows(epic, 1, 4);
+                createRows(node, 1, 4);
                 var nodeId = "epic-child-" + epic.FormattedID,
                         childTable = new rally.sdk.ui.Table(tableConfig);
                 childTable.addRows(rows);
@@ -77,7 +77,7 @@
 
                 function createRows(node, level, maxDepth) {
 
-                    dojo.forEach(tree.getChildren(node.FormattedID), function (child) {
+                    dojo.forEach(node.getChildren(), function (child) {
                         rows = rows.concat(createTableRowObject(child, epic, level));
                         if (level < maxDepth) {
                             createRows(child, level + 1, maxDepth);
@@ -110,18 +110,26 @@
                 return rally.sdk.util.DateTime.format(dateObject, "MM/dd/yyy");
             }
 
-            function createStoryRowObject(story, source, level) {
+            function formatScore(node) {
+                var score = node.getScore();
+                return "Pass: " + score["success"] + "<br/>" +
+                        "Fail: " + score["fail"] + "<br/>" +
+                        "Not run: " + score["notRun"];
+            }
+
+            function createStoryRowObject(node, story, source, level) {
                 var tempObject;
                 tempObject = {};
                 tempObject.FormattedId = objectToLinkMarkup(story.FormattedID, story) + "<span>-" + story.Name + "</span>";
                 tempObject.Source = source;
                 tempObject.Name = story.Name;
                 tempObject.Level = level;
+                tempObject.LastVerdict = formatScore(node);
                 return tempObject;
             }
 
-            function createTestCaseObject(story, source, testCase, attachment, level) {
-                var tempObject = createStoryRowObject(story, source, level);
+            function createTestCaseObject(node, story, source, testCase, attachment, level) {
+                var tempObject = createStoryRowObject(node, story, source, level);
                 if (attachment) {
                     tempObject.Attachment = createAttachmentLink(attachment);
                 }
@@ -132,7 +140,7 @@
                     tempObject.OwnerName = testCase.Owner ? testCase.Owner._refObjectName : "...";
                     tempObject.TestCaseFormattedId = objectToLinkMarkup(testCase.FormattedID, testCase);
                     tempObject.TestCaseName = testCase.Name;
-                    tempObject.LastVerdict = testCase.LastVerdict || "...";
+                    tempObject.LastVerdict = testCase.LastVerdict || "...";;
                     tempObject.LastRun = testCase.LastRun ? formatDate(testCase.LastRun) : "...";
                     tempObject.LastBuild = testCase.LastBuild ? testCase.LastBuild : "...";
                     tempObject.Risk = testCase.Risk;
@@ -141,14 +149,14 @@
                 return tempObject;
             }
 
-            function createTableRowObject(input, source, level) {
+            function createTableRowObject(node, source, level) {
                 try {
                     var results = [];
-                    var story = dojo.clone(input);
+                    var story = dojo.clone(node.getItem());
                     while (story.Attachments.length + story.TestCases.length) {
                         var currentAttachment = story.Attachments.length ? story.Attachments.pop() : false;
                         var currentTestCase = story.TestCases.length ? story.TestCases.pop() : false;
-                        results.push(createTestCaseObject(story, source, currentTestCase, currentAttachment, level));
+                        results.push(createTestCaseObject(node, story, source, currentTestCase, currentAttachment, level));
                     }
                     if (results.length) {
                         results.sort(function(a, b) {
@@ -158,8 +166,8 @@
                             return a.FormattedId > b.FormattedId;
                         });
                     }
-                    else {
-                        results = [createStoryRowObject(story, source, level)];
+                    if (node.getItem().TestCases.length != 1) {
+                        results.unshift(createStoryRowObject(node, story, source, level));
                     }
                     return results;
                 }
@@ -171,7 +179,7 @@
 
             function showTables(results) {
                 var container = dojo.byId("display"),
-                        tree = createTree(results, "epics", 4);
+                        tree = new Tree(results, "epics", 4);
                 if (tree.isEmpty()) {
                     dojo.place("<h3>No epic stories found</h3>", container);
                 } else {
@@ -179,12 +187,11 @@
                 }
             }
 
-            function createTree(results, prefix, maxDepth) {
+            function Tree(results, prefix, maxDepth) {
                 var tree = {},
                         internal = {};
 
                 tree.getRoots = getRoots;
-                tree.getChildren = getChildren;
                 tree.isEmpty = isEmpty;
 
                 initialize();
@@ -198,8 +205,72 @@
                             if (!internal[parentId]) {
                                 internal[parentId] = [];
                             }
-                            internal[parentId].push(item);
+                            internal[parentId].push(new Node(item));
                         })
+                    }
+                }
+
+                function Node(item) {
+                    var scope = this, score = null;
+
+                    scope.getId = getId;
+                    scope.isLeaf = isLeaf;
+                    scope.hasChildren = hasChildren;
+                    scope.getChildren = getChildren;
+                    scope.getScore = getScore;
+                    scope.getItem = getItem;
+
+                    return scope;
+
+                    function getId() {
+                        return item.FormattedID;
+                    }
+
+                    function hasChildren() {
+                        var id = getId();
+                        return internal[id] && (internal[id].length > 0);
+                    }
+
+                    function isLeaf() {
+                        return !hasChildren();
+                    }
+
+                    function getChildren() {
+                        return internal[getId()];
+                    }
+
+                    function calculateScore() {
+                        var result = {};
+                        result.success = 0;
+                        result.fail = 0;
+                        result.notRun = 0;
+                        dojo.forEach(item.TestCases, function (ts) {
+                            if (ts.LastVerdict === "Pass") {
+                                result.success += 1;
+                            } else if (ts.LastVerdict === "Fail") {
+                                result.fail += 1;
+                            } else {
+                                result.notRun += 1;
+                            }
+                        });
+                        dojo.forEach(getChildren(), function (child) {
+                            var score = child.getScore();
+                            result.success += score.success;
+                            result.fail += score.fail;
+                            result.notRun += score.notRun;
+                        });
+                        return result;
+                    }
+
+                    function getScore() {
+                        if (score === null) {
+                            score = calculateScore();
+                        }
+                        return score;
+                    }
+
+                    function getItem() {
+                        return item;
                     }
                 }
 
@@ -219,13 +290,13 @@
 
             function drawTree(tree, container) {
                 dojo.forEach(tree.getRoots(), function (node) {
-                    drawNode(tree, node, container);
+                    drawNode(node, container);
                 });
             }
 
-            function drawNode(tree, node, container) {
+            function drawNode(node, container) {
                 createEpicTable(node, container);
-                createChildTable(tree, node, container);
+                createChildTable(node, container);
             }
         }
 
