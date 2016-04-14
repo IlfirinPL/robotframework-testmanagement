@@ -47,7 +47,7 @@ class TestResultManager(object):
         return result
 
     def add_test_result(self, test_case_id, build, verdict, notes=None, attachment_list=None, date=None, tester=None,
-                        test_set_id=None, duration=None):
+                        test_set_id=None, duration=None, number_of_retries=3):
         """
         Adds a new Test Result to Test Case provided with FormatterID passed as first (obligatory) parameter.
 
@@ -56,8 +56,8 @@ class TestResultManager(object):
         The last required for the test result creation parameter is `date` parameter. If it is not provided directyle
         it is set to the current datetime.
 
-        Method takes 5 optional parameters: `notes`, `attachment_list` (a list of paths to files - absolute or relative),
-        `tester` (name of the user), `test_set_id` (FormattedID of TestSet object) and `duration`.
+        Method takes 6 optional parameters: `notes`, `attachment_list` (a list of paths to files - absolute or relative),
+        `tester` (name of the user), `test_set_id` (FormattedID of TestSet object), `duration` and `number_of_retries`.
 
         Example usage:
         | # minimal information |
@@ -75,6 +75,7 @@ class TestResultManager(object):
         TestSet: {test_set_id}
         Notes: {notes}
         Duration: {duration}
+        Number of retries: {number_of_retries}
         Attachment_list: {attachment_list}""".format(
             test_case_id=test_case_id,
             build=build,
@@ -84,17 +85,24 @@ class TestResultManager(object):
             test_set_id=test_set_id,
             notes=notes,
             duration=duration,
+            number_of_retries=number_of_retries,
             attachment_list=attachment_list
         ))
         test_case_id = get_first(test_case_id)
         connection = self._get_rally_connection()
-        test_result_data = self._build_test_result_data(test_case_id, build, verdict,
-                                                        date=date, tester=tester, test_set_id=test_set_id, notes=notes,
-                                                        duration=duration)
-        try:
-            test_result = connection.create('TestCaseResult', test_result_data)
-            self._add_attachments(test_result, attachment_list)
-        except Exception as e:
-            logger.warn("An error occurred")
-            logger.warn(traceback.format_exc())
-            raise e
+        number_of_retries = int(number_of_retries)
+        iteration = 0
+        while iteration < number_of_retries:
+            try:
+                test_result_data = self._build_test_result_data(test_case_id, build, verdict,
+                                                                date=date, tester=tester, test_set_id=test_set_id, notes=notes,
+                                                                duration=duration)
+                test_result = connection.create('TestCaseResult', test_result_data)
+                self._add_attachments(test_result, attachment_list)
+                break
+            except Exception as e:
+                logger.warn("An error occurred")
+                logger.warn(traceback.format_exc())
+                iteration += 1
+                if iteration == number_of_retries:
+                    raise e
