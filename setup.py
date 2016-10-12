@@ -24,6 +24,6 @@ setup(
     install_requires=[
         u'robotframework',
         u'requests',
-        u'pyral'
+        u'pyral==1.1.1'
     ]
 )
