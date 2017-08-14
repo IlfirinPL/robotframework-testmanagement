@@ -99,9 +99,9 @@ class ConnectionManager(object):
         server = get_netloc_and_path(server_url)
         kwargs = {}
         if project:
-            kwargs['project'] = project
+            kwargs['project'] = str(project)
         if workspace:
-            kwargs['workspace'] = workspace
+            kwargs['workspace'] = str(workspace)
         tries_counter = 0
 
         number_of_retries = int(number_of_retries)
