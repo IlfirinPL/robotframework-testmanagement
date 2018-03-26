@@ -8,7 +8,7 @@
 
 from setuptools import setup
 
-version = u'0.1.12'
+version = u'0.1.13'
 
 setup(
     name=u'robotframework-testmanagement',
@@ -24,6 +24,6 @@ setup(
     install_requires=[
         u'robotframework',
         u'requests',
-        u'pyral==1.1.1'
+        u'pyral'
     ]
 )
