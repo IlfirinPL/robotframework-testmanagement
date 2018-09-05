@@ -8,6 +8,10 @@ To install it just type in terminal
 ```
 pip install robotframework-testmanagement
 ```
+or to install latest
+```
+pip install -U git+https://github.com/IlfirinPL/robotframework-testmanagement.git
+```
 
 For further information visit project [site](http://ilfirinpl.github.io/robotframework-testmanagement/).
 
