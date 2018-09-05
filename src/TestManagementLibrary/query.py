@@ -8,20 +8,17 @@ import traceback
 
 from robot.api import logger
 
-
-
-
 try:
     # noinspection PyCompatibility
     import unicode as str
 except ImportError:  # python3
+    print("DoNothing")
     # noinspection PyCompatibility,PyUnresolvedReferences
-    import str
-
 
 
 class Operator(str):
     pass
+
 
 Operator.EQUAL = Operator('=')
 Operator.NOT_EQUAL = Operator('!=')
@@ -30,13 +27,12 @@ Operator.NOT_CONTAINS = Operator('!contains')
 
 
 class RallyQueryParameter(object):
-
     NAME = None
     DEFAULT_OPERATOR = Operator.EQUAL
 
     @classmethod
     def from_string(cls, value):
-        #@TODO: so far only default operator is supported
+        # @TODO: so far only default operator is supported
         return cls(value)
 
     @classmethod
@@ -107,7 +103,6 @@ class UserNameParameter(RallyQueryParameter):
 
 
 class RallyQueryJoinMethod(str):
-
     PATTERN = u"({arg1}) {oper} ({arg2})"
 
     @classmethod
@@ -137,6 +132,7 @@ class RallyQueryJoinMethod(str):
                 )
         return result
 
+
 RallyQueryJoinMethod.AND = RallyQueryJoinMethod('AND')
 RallyQueryJoinMethod.OR = RallyQueryJoinMethod('OR')
 
@@ -163,7 +159,6 @@ class RallyQuery(object):
 
 
 class QueryManager(object):
-
     QUERY_PARAMETER_REGISTRY = dict(
         object_id=ObjectIDParameter,
         formatted_id=FormattedIDParameter,
