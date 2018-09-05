@@ -3,8 +3,14 @@
 
 #  Copyright (c) 2015 Lingaro
 
+try:
+    # noinspection PyCompatibility
+    import urlparse
+except ImportError:  # python3
+    # noinspection PyCompatibility,PyUnresolvedReferences
+    from urllib.parse import urlparse
 
-import urlparse
+
 
 from robot.api import logger
 
