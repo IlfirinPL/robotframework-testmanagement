@@ -3,11 +3,17 @@
 
 #  Copyright (c) 2015 Lingaro
 
-
-from robot.api import logger
 import mimetypes
+from robot.api import logger
 
 from .utils import make_tuple
+
+
+try:
+    UNICODE_EXISTS = bool(type(unicode))
+except NameError:
+    unicode = str
+
 
 class AttachmentManager(object):
     """
@@ -19,7 +25,9 @@ class AttachmentManager(object):
         mime_type, _ = mimetypes.guess_type(attachment, strict=False)
         if not mime_type:
             mime_type = default_mime_type
-            logger.warn(u"can't guess mime type for {0}, use default: {1}".format(attachment, mime_type))
+            logger.warn(
+                u"can't guess mime type for {0}, use default: {1}".format(attachment, mime_type)
+            )
         return dict(
             Name=attachment,
             mime_type=mime_type
@@ -27,7 +35,10 @@ class AttachmentManager(object):
 
     @classmethod
     def _build_attachment_list_data(cls, attachment_list=None):
-        return [cls._build_attachment_data(attachment) for attachment in make_tuple(attachment_list)]
+        return [
+            cls._build_attachment_data(attachment)
+            for attachment in make_tuple(attachment_list)
+        ]
 
     def _add_attachments(self, artifact, attachment_list):
         """
@@ -40,5 +51,6 @@ class AttachmentManager(object):
             logger.info(u"Adding attachments: {0}".format(unicode(attachment_list)))
             conn = self._get_rally_connection()
             conn.addAttachments(artifact, attachment_list_data)
+
 
 mimetypes.add_type('text/plain', '.sql', strict=False)

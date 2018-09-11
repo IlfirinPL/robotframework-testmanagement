@@ -12,7 +12,7 @@ try:
     # noinspection PyCompatibility
     import unicode as str
 except ImportError:  # python3
-    print("DoNothing")
+    pass
     # noinspection PyCompatibility,PyUnresolvedReferences
 
 
