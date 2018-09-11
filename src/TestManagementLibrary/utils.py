@@ -8,7 +8,7 @@ try:
     import urlparse
 except ImportError:  # python3
     # noinspection PyCompatibility,PyUnresolvedReferences
-    from urllib.parse import urlparse
+    import urllib.parse as urlparse
 
 
 
@@ -39,7 +39,7 @@ def make_tuple(value_or_list):
     return result
 
 
-def get_netloc_and_path( url):
+def get_netloc_and_path(url):
     split_result = urlparse.urlsplit(url)
     if split_result.scheme and split_result.scheme != u'https':
         raise ValueError(u"unsupported protocol {0}. Only https is allowed".format(split_result.scheme))

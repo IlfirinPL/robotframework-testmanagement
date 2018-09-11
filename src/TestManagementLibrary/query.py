@@ -8,9 +8,17 @@ import traceback
 
 from robot.api import logger
 
-
-class Operator(unicode):
+try:
+    # noinspection PyCompatibility
+    import unicode as str
+except ImportError:  # python3
     pass
+    # noinspection PyCompatibility,PyUnresolvedReferences
+
+
+class Operator(str):
+    pass
+
 
 Operator.EQUAL = Operator('=')
 Operator.NOT_EQUAL = Operator('!=')
@@ -19,13 +27,12 @@ Operator.NOT_CONTAINS = Operator('!contains')
 
 
 class RallyQueryParameter(object):
-
     NAME = None
     DEFAULT_OPERATOR = Operator.EQUAL
 
     @classmethod
     def from_string(cls, value):
-        #@TODO: so far only default operator is supported
+        # @TODO: so far only default operator is supported
         return cls(value)
 
     @classmethod
@@ -46,9 +53,9 @@ class RallyQueryParameter(object):
 
     def construct(self):
         return u"{name} {operator} \"{value}\"".format(
-            name=unicode(self.name),
-            operator=unicode(self._operator),
-            value=unicode(self._value)
+            name=str(self.name),
+            operator=str(self._operator),
+            value=str(self._value)
         )
 
     def is_valid(self):
@@ -95,8 +102,7 @@ class UserNameParameter(RallyQueryParameter):
     DEFAULT_OPERATOR = Operator.CONTAINS
 
 
-class RallyQueryJoinMethod(unicode):
-
+class RallyQueryJoinMethod(str):
     PATTERN = u"({arg1}) {oper} ({arg2})"
 
     @classmethod
@@ -126,6 +132,7 @@ class RallyQueryJoinMethod(unicode):
                 )
         return result
 
+
 RallyQueryJoinMethod.AND = RallyQueryJoinMethod('AND')
 RallyQueryJoinMethod.OR = RallyQueryJoinMethod('OR')
 
@@ -142,9 +149,9 @@ class RallyQuery(object):
 
     def add_parameter(self, parameter):
         if not parameter.is_valid():
-            raise ValueError(u"Invalid parameter {0}".format(unicode(parameter)))
+            raise ValueError(u"Invalid parameter {0}".format(str(parameter)))
         if parameter in self._params:
-            raise ValueError(u"Duplicated parameter value {0}".format(unicode(parameter)))
+            raise ValueError(u"Duplicated parameter value {0}".format(str(parameter)))
         self._params.append(parameter)
 
     def construct(self):
@@ -152,7 +159,6 @@ class RallyQuery(object):
 
 
 class QueryManager(object):
-
     QUERY_PARAMETER_REGISTRY = dict(
         object_id=ObjectIDParameter,
         formatted_id=FormattedIDParameter,
@@ -177,7 +183,7 @@ class QueryManager(object):
                 param_class = cls.QUERY_PARAMETER_REGISTRY.get(name)
                 if not param_class.is_default_value(value):
                     param = param_class.from_string(value)
-                    logger.info(u"{0} provided: {1}".format(param.name, unicode(value)))
+                    logger.info(u"{0} provided: {1}".format(param.name, str(value)))
                     query.add_parameter(param)
             else:
                 logger.warn(u"Unregistered parameter class for key {0}".format(name))

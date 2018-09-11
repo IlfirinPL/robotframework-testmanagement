@@ -3,9 +3,6 @@
 
 #  Copyright (c) 2015 Lingaro
 
-
-__version__ = '0.1.10'
-
 from .connection_manager import ConnectionManager
 from .query import QueryManager
 from .user import UserManager
@@ -16,8 +13,8 @@ from .test_result import TestResultManager
 from .defect import DefectManager
 
 
-class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, AttachmentManager, TestCaseManager,
-                            TestSetManager, TestResultManager, DefectManager):
+class TestManagementLibrary(ConnectionManager, QueryManager, UserManager, AttachmentManager,
+                            TestCaseManager, TestSetManager, TestResultManager, DefectManager):
     """
     Test Management Library contains utilities meant for Robot Framework's usage.
 

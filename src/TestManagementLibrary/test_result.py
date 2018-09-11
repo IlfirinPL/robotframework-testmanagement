@@ -11,10 +11,11 @@ from robot.api import logger
 
 from .utils import get_first
 
+
 class TestResultManager(object):
 
-    def _build_test_result_data(self, test_case_id, build, verdict, date=None, tester=None, test_set_id=None,
-                                notes=None, duration=None, attachment_list=None):
+    def _build_test_result_data(self, test_case_id, build, verdict, date=None, tester=None,
+                                test_set_id=None, notes=None, duration=None):
         """
         :param test_case_ID:
         :param verdict:
@@ -24,7 +25,6 @@ class TestResultManager(object):
         :param test_set:
         :param notes:
         :param duration:
-        :param attachment_list:
         :return:
         """
         test_case = self._get_test_case_by_id(test_case_id)
@@ -91,12 +91,13 @@ class TestResultManager(object):
         test_case_id = get_first(test_case_id)
         connection = self._get_rally_connection()
         number_of_retries = int(number_of_retries)
+        test_result_data = self._build_test_result_data(
+            test_case_id, build, verdict, date=date, tester=tester, test_set_id=test_set_id,
+            notes=notes, duration=duration
+        )
         iteration = 0
         while iteration < number_of_retries:
             try:
-                test_result_data = self._build_test_result_data(test_case_id, build, verdict,
-                                                                date=date, tester=tester, test_set_id=test_set_id, notes=notes,
-                                                                duration=duration)
                 test_result = connection.create('TestCaseResult', test_result_data)
                 self._add_attachments(test_result, attachment_list)
                 break
